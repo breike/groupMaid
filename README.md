@@ -7,6 +7,7 @@ This is a telegram bot written in Go.
   * ban users by `/ban` command
   * kick users by `/kick` command
   * mute users for certain time (in minutes) by `/mute %integer%` command
+  * warn users by `/warn` command
   * write info about users (name, gender, notes) by `/set` command
 
 ## How can I launch groupMaid?

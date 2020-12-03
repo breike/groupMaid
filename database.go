@@ -44,6 +44,12 @@ type chatConfig struct {
 
 	RulesMsg                        string
 	WelcomeMsg                      string
+
+	WarnsLimit                      int
+	// 0 - ban
+	// 1 - kick
+	// 2 - mute
+	WarnsAction                     int
 }
 
 type user struct {
@@ -51,6 +57,8 @@ type user struct {
 	Gender           string
 	Notes            string
 	BanNote          string
+
+	Warns            int
 }
 
 var Chat_cfg_defaults = chatConfig{

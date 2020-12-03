@@ -11,19 +11,6 @@ import (
 
 var config maidConfig
 
-var numericKeyboard = tgbotapi.NewReplyKeyboard(
-	tgbotapi.NewKeyboardButtonRow(
-		tgbotapi.NewKeyboardButton("1"),
-		tgbotapi.NewKeyboardButton("2"),
-		tgbotapi.NewKeyboardButton("3"),
-	),
-	tgbotapi.NewKeyboardButtonRow(
-		tgbotapi.NewKeyboardButton("4"),
-		tgbotapi.NewKeyboardButton("5"),
-		tgbotapi.NewKeyboardButton("6"),
-	),
-)
-
 func main() {
 	configPath := flag.String("config", "config.toml", "config file path")
 	flag.Parse()
@@ -117,9 +104,11 @@ func main() {
 				if err != nil {
 					log.Println("ERROR: Failed to unset user info: ", err)
 				}
-
-			case "keyboard":
-				msg.ReplyMarkup = numericKeyboard
+			case "kick":
+				msg.Text, err = maidKickUser(bot, update)
+				if err != nil {
+					log.Println("ERROR: Failed to kick user: ", err)
+				}
 			case "mute":
 				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
 					msg.Text = "ERROR: not admin"
@@ -159,6 +148,11 @@ func main() {
 				if config.BotDebug {
 					msg.Text, err = maidGetWelcome(bot, update, &db)
 					msg.DisableWebPagePreview = db.Chats[chat_id].Config.WelcomeDisableWebPagePreview
+				}
+			case "warn":
+				msg.Text, err = maidWarnUser(bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: failed to warn user: ", err)
 				}
 			case "unmute":
 				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
