@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strconv"
+	"strings"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -97,6 +98,35 @@ func main() {
 				} else {
 					msg.Text, err = maidBanUser(bot, update, &db)
 				}
+			case "config":
+				args_list := strings.Split(update.Message.Text, " ")
+				if len(args_list) > 1 {
+					if args_list[1] == "get" {
+						if len(args_list) > 2 {
+							msg.Text, err = maidGetChatConfig(bot, update, &db, args_list[2])
+							if err != nil {
+								log.Println("ERROR: can't get chat config: ", err)
+							}
+						} else {
+							msg.Text, err = maidGetChatConfig(bot, update, &db, "")
+							if err != nil {
+								log.Println("ERROR: can't get chat config: ", err)
+							}
+						}
+					} else if args_list[1] == "set" {
+						if len(args_list) > 3 {
+							msg.Text, err = maidSetChatConfig(bot, update, &db, args_list[2], args_list[3])
+							if err != nil {
+								log.Println("ERROR: can't set chat config: ", err)
+							}
+						} else {
+							msg.Text = "ERROR: /config set syntax: `/config set %key% %value%`"
+						}
+					}
+				} else {
+					msg.Text = "need `set` or `get` command for config"
+				}
+
 			case "help":
 				msg.Text, err = "type /hey", nil
 			case "info":

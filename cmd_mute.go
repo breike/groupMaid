@@ -9,7 +9,7 @@ import (
 )
 
 func maidMuteUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error) {
-	msg                   := ""
+	msg_txt               := ""
 	var err error          = nil
 
 	var mute_time            int
@@ -18,53 +18,52 @@ func maidMuteUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error) 
 	canSendMediaMessages  := new(bool)
 	canSendOtherMessages  := new(bool)
 	canAddWebPagePreviews := new(bool)
-	post_msg              := update.Message
 
 	memberFromCmd, err := maidGetChatMember(bot, update)
 	if err != nil {
-		msg = "ERROR: internal error check log for the further info"
+		msg_txt = "ERROR: internal error check log for the further info"
 
-		return msg, err
+		return msg_txt, err
 	}
 
 	if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
-		msg = "ERROR: not admin"
+		msg_txt = "ERROR: not admin"
 
-		return msg, err
+		return msg_txt, err
 	}
 
-	if post_msg.ReplyToMessage == nil {
-		msg = "ERROR: reply to user you want to ban"
+	if update.Message.ReplyToMessage == nil {
+		msg_txt = "ERROR: reply to user you want to ban"
 
-		return msg, err
+		return msg_txt, err
 	}
 
 	memberToBan, err := maidGetReplyChatMember(bot, update)
 	if err != nil {
-		msg = "ERROR: internal error check log for the further info"
+		msg_txt = "ERROR: internal error check log for the further info"
 
-		return msg, err
+		return msg_txt, err
 	}
 
 	if memberToBan.IsAdministrator() || memberToBan.IsCreator() {
-		msg = "ERROR: can't mute admins"
+		msg_txt = "ERROR: can't mute admins"
 
-		return msg, err
+		return msg_txt, err
 	}
 
-	if len(strings.Fields(post_msg.Text)) > 1 {
-		mute_time, err = strconv.Atoi(strings.Fields(post_msg.Text)[1])
+	if len(strings.Fields(update.Message.Text)) > 1 {
+		mute_time, err = strconv.Atoi(strings.Fields(update.Message.Text)[1])
 		if err != nil {
-			msg = "ERROR: looks like that entered time is not an integer"
-			return msg, err
+			msg_txt = "ERROR: looks like that entered time is not an integer"
+			return msg_txt, err
 		}
 	} else {
 		mute_time = 60
 	}
 
 	var member_config tgbotapi.ChatMemberConfig
-	member_config.ChatID = post_msg.ReplyToMessage.Chat.ID
-	member_config.UserID = post_msg.ReplyToMessage.From.ID
+	member_config.ChatID = update.Message.ReplyToMessage.Chat.ID
+	member_config.UserID = update.Message.ReplyToMessage.From.ID
 
 	*canSendMessages       = false
 	*canSendMediaMessages  = false
@@ -72,7 +71,7 @@ func maidMuteUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error) 
 	*canAddWebPagePreviews = false
 
 	var mute_config tgbotapi.RestrictChatMemberConfig
-	mute_config.UntilDate             = int64(post_msg.Date + (mute_time * 60))
+	mute_config.UntilDate             = int64(update.Message.Date + (mute_time * 60))
 	mute_config.ChatMemberConfig      = member_config
 	mute_config.CanSendMessages       = canSendMessages
 	mute_config.CanSendMediaMessages  = canSendMediaMessages
@@ -84,66 +83,65 @@ func maidMuteUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error) 
 	if err != nil {
 		if resp.ErrorCode == 400 {
 			if resp.Description == "Bad Request: CHAT_ADMIN_REQUIRED" {
-				msg = "ERROR: bot is not admin"
+				msg_txt = "ERROR: bot is not admin"
 			} else {
-				msg = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
+				msg_txt = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
 			}
 		} else {
-			msg = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
+			msg_txt = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
 		}
-		return msg, err
+		return msg_txt, err
 	}
 
-	msg = fmt.Sprintf("%s *muted* %s for %d minutes", post_msg.From.FirstName,
-	                  post_msg.ReplyToMessage.From.FirstName, mute_time)
-	return msg, err
+	msg_txt = fmt.Sprintf("%s *muted* %s for %d minutes", update.Message.From.FirstName,
+	                  update.Message.ReplyToMessage.From.FirstName, mute_time)
+	return msg_txt, err
 }
 
 func maidUnmuteUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error) {
-	msg                   := ""
+	msg_txt               := ""
 	var err error          = nil
 
 	canSendMessages       := new(bool)
 	canSendMediaMessages  := new(bool)
 	canSendOtherMessages  := new(bool)
 	canAddWebPagePreviews := new(bool)
-	post_msg              := update.Message
 
 	memberFromCmd, err := maidGetChatMember(bot, update)
 	if err != nil {
-		msg = "ERROR: internal error check log for the further info"
+		msg_txt = "ERROR: internal error check log for the further info"
 
-		return msg, err
+		return msg_txt, err
 	}
 
 	if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
-		msg = "ERROR: not admin"
+		msg_txt = "ERROR: not admin"
 
-		return msg, err
+		return msg_txt, err
 	}
 
-	if post_msg.ReplyToMessage == nil {
-		msg = "ERROR: reply to user you want to ban"
+	if update.Message.ReplyToMessage == nil {
+		msg_txt = "ERROR: reply to user you want to ban"
 
-		return msg, err
+		return msg_txt, err
 	}
 
 	memberToBan, err := maidGetReplyChatMember(bot, update)
 	if err != nil {
-		msg = "ERROR: internal error check log for the further info"
+		msg_txt = "ERROR: internal error check log for the further info"
 
-		return msg, err
+		return msg_txt, err
 	}
 
 	if memberToBan.IsAdministrator() || memberToBan.IsCreator() {
-		msg = "ERROR: can't mute admins"
+		msg_txt = "ERROR: can't mute admins"
 
-		return msg, err
+		return msg_txt, err
 	}
 
 	var member_config tgbotapi.ChatMemberConfig
-	member_config.ChatID = post_msg.ReplyToMessage.Chat.ID
-	member_config.UserID = post_msg.ReplyToMessage.From.ID
+	member_config.ChatID = update.Message.ReplyToMessage.Chat.ID
+	member_config.UserID = update.Message.ReplyToMessage.From.ID
 
 	*canSendMessages       = true
 	*canSendMediaMessages  = true
@@ -151,7 +149,7 @@ func maidUnmuteUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error
 	*canAddWebPagePreviews = true
 
 	var mute_config tgbotapi.RestrictChatMemberConfig
-	mute_config.UntilDate             = int64(post_msg.Date)
+	mute_config.UntilDate             = int64(update.Message.Date)
 	mute_config.ChatMemberConfig      = member_config
 	mute_config.CanSendMessages       = canSendMessages
 	mute_config.CanSendMediaMessages  = canSendMediaMessages
@@ -160,11 +158,11 @@ func maidUnmuteUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error
 
 	resp, err := bot.RestrictChatMember(mute_config)
 	err = checkAPIResp(resp)
-	if msg != "" {
-		return msg, err
+	if msg_txt != "" {
+		return msg_txt, err
 	}
 
-	msg = fmt.Sprintf("%s *unmuted*",
-	                  post_msg.ReplyToMessage.From.FirstName)
-	return msg, err
+	msg_txt = fmt.Sprintf("%s *unmuted*",
+	                  update.Message.ReplyToMessage.From.FirstName)
+	return msg_txt, err
 }
