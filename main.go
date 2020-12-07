@@ -83,6 +83,22 @@ func main() {
 		if update.Message.NewChatMembers != nil {
 			msg.Text, err = maidGetWelcome(bot, update, &db)
 			msg.DisableWebPagePreview = db.Chats[chat_id].Config.WelcomeDisableWebPagePreview
+			resp, err := bot.Send(msg)
+			if err != nil {
+				log.Println("ERROR: ", err)
+
+				continue
+			}
+
+			log.Println("LOG: message sent: ", resp)
+
+			db.Chats[chat_id].Config.LastWelcomeID = resp.MessageID
+			err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, &db)
+			if err != nil {
+				log.Fatal("ERROR: can't write chat config: ", err)
+			}
+
+			continue
 		}
 
 		memberFromCmd, err := maidGetChatMember(bot, update)
@@ -178,6 +194,20 @@ func main() {
 				if config.BotDebug {
 					msg.Text, err = maidGetWelcome(bot, update, &db)
 					msg.DisableWebPagePreview = db.Chats[chat_id].Config.WelcomeDisableWebPagePreview
+					resp, err := bot.Send(msg)
+					if err != nil {
+						log.Println("ERROR: ", err)
+					}
+
+					log.Println("LOG: message sent: ", resp)
+
+					db.Chats[chat_id].Config.LastWelcomeID = resp.MessageID
+					err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, &db)
+					if err != nil {
+						log.Fatal("ERROR: can't write chat config: ", err)
+					}
+
+					continue
 				}
 			case "warn":
 				msg.Text, err = maidWarnUser(bot, update, &db)

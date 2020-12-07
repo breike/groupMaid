@@ -17,6 +17,13 @@ func maidGetWelcome(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (s
 	welcome_text = strings.Replace(welcome_text, "\\`", "`", -1)
 	welcome_text = strings.Replace(welcome_text, "$name", update.Message.From.FirstName, -1)
 
+	if db.Chats[chat_id].Config.DeleteLastWelcome {
+		if db.Chats[chat_id].Config.LastWelcomeID != 0 {
+			bot.DeleteMessage(tgbotapi.NewDeleteMessage(update.Message.Chat.ID,
+													    db.Chats[chat_id].Config.LastWelcomeID))
+		}
+	}
+
 	msg_txt = welcome_text
 
 	return msg_txt, err

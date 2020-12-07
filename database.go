@@ -42,6 +42,7 @@ type chatConfig struct {
 	RulesCommandOn                  bool
 	WelcomeOn                       bool
 
+	LastWelcomeID                   int
 	RulesMsg                        string
 	WelcomeMsg                      string
 
@@ -69,6 +70,7 @@ var Chat_cfg_defaults = chatConfig{
 	MuteCommandOn:       true,
 	RulesCommandOn:      true,
 
+	LastWelcomeID:       0,
 	WelcomeOn:           true,
 	RulesMsg:
 		"There's no rules yet. " +
