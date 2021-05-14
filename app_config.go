@@ -7,10 +7,12 @@ import (
 )
 
 type maidConfig struct {
+	BotAdminId   int
 	BotDebug     bool
+	BotDirectory string
+	BotWhitelist []int64
 	TgBotAPI     string
 
-	BotDirectory string
 }
 
 func configInit(configPath string) (maidConfig, error) {

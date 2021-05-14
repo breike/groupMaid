@@ -59,6 +59,29 @@ func main() {
 			continue
 		}
 
+		if len(config.BotWhitelist) > 0 {
+			var isWhitelisted = false
+
+			for i := 0; i < len(config.BotWhitelist); i++ {
+				if update.Message.Chat.ID == config.BotWhitelist[i] {
+					isWhitelisted = true
+				}
+			}
+
+			if !(isWhitelisted == true) {
+				msg_text := "Whoops! Your chat is not in whitelist!"
+				msg := tgbotapi.NewMessage(update.Message.Chat.ID, msg_text)
+				_, err := bot.Send(msg)
+				if err != nil {
+					log.Println("ERROR: ", err)
+				}
+
+				chat_to_leave := tgbotapi.ChatConfig{ChatID: update.Message.Chat.ID}
+				bot.LeaveChat(chat_to_leave)
+				continue
+			}
+		}
+
 		//check if no the chat settings in the db
 		chat_id := strconv.FormatInt(update.Message.Chat.ID, 10)
 		if _, ok := db.Chats[chat_id]; !(ok) {
@@ -109,7 +132,7 @@ func main() {
 		if update.Message.IsCommand() {
 			switch update.Message.Command() {
 			case "ban":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
+				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
 					msg.Text = "ERROR: not admin"
 				} else {
 					msg.Text, err = maidBanUser(bot, update, &db)
@@ -151,12 +174,16 @@ func main() {
 					log.Println("ERROR: Failed to unset user info: ", err)
 				}
 			case "kick":
-				msg.Text, err = maidKickUser(bot, update)
+				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
+					msg.Text = "ERROR: not admin"
+				} else {
+					msg.Text, err = maidKickUser(bot, update)
+				}
 				if err != nil {
 					log.Println("ERROR: Failed to kick user: ", err)
 				}
 			case "mute":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
+				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
 					msg.Text = "ERROR: not admin"
 				} else {
 					msg.Text, err = maidMuteUser(bot, update)
@@ -166,7 +193,7 @@ func main() {
 				msg.DisableWebPagePreview = db.Chats[chat_id].Config.RulesDisableWebPagePreview
 
 			case "set":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
+				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
 					msg.Text = "ERROR: not admin"
 				} else {
 					msg.Text, err = maidSetUserInfo(bot, update, &db)
@@ -176,13 +203,13 @@ func main() {
 				}
 
 			case "setrules":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
+				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
 					msg.Text = "ERROR: not admin"
 				} else {
 					msg.Text, err = maidSetRules(bot, update, &db)
 				}
 			case "setwelcome":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
+				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
 					msg.Text = "ERROR: not admin"
 				} else {
 					msg.Text, err = maidSetWelcome(bot, update, &db)
@@ -215,13 +242,13 @@ func main() {
 					log.Println("ERROR: failed to warn user: ", err)
 				}
 			case "unmute":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
+				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
 					msg.Text = "ERROR: not admin"
 				} else {
 					msg.Text, err = maidUnmuteUser(bot, update)
 				}
 			case "unset":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) {
+				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
 					msg.Text = "ERROR: not admin"
 				} else {
 					msg.Text, err = maidUnsetUserInfo(bot, update, &db)

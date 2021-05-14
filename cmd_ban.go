@@ -12,9 +12,6 @@ func maidBanUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (stri
 	msg_txt := ""
 	var err error = nil
 
-	chat_id := strconv.FormatInt(update.Message.Chat.ID, 10)
-	user_id := strconv.Itoa(update.Message.ReplyToMessage.From.ID)
-
 	if update.Message.ReplyToMessage == nil {
 		msg_txt = "ERROR: reply to user you want to ban"
 
@@ -36,10 +33,13 @@ func maidBanUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (stri
 
 	var member_config tgbotapi.ChatMemberConfig
 	member_config.ChatID = update.Message.ReplyToMessage.Chat.ID
-	member_config.UserID = update.Message.ReplyToMessage.From.ID
+	member_config.UserID = memberToBan.User.ID
 
 	var kick_config tgbotapi.KickChatMemberConfig
 	kick_config.ChatMemberConfig = member_config
+
+	chat_id := strconv.FormatInt(member_config.ChatID, 10)
+	user_id := strconv.Itoa(member_config.UserID)
 
 	resp, err := bot.KickChatMember(kick_config)
 	err = checkAPIResp(resp)
@@ -48,16 +48,16 @@ func maidBanUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (stri
 			if resp.Description == "Bad Request: CHAT_ADMIN_REQUIRED" {
 				msg_txt = "ERROR: bot is not admin"
 			} else {
-				msg_txt = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
+				msg_txt = "ERROR: " + strconv.Itoa(resp.ErrorCode) + " - " + resp.Description
 			}
 		} else {
-			msg_txt = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
+			msg_txt = "ERROR: " + strconv.Itoa(resp.ErrorCode) + " - " + resp.Description
 		}
 		return msg_txt, err
 	}
 
 	if len(strings.Split(update.Message.Text, " ")) > 1 {
-		ban_note := strings.Replace(update.Message.Text, "/ban", "", 1)
+		ban_note := strings.Replace(update.Message.Text, "/ban ", "", 1)
 
 		if db.Chats[chat_id].Users[user_id] == nil {
 			db.Chats[chat_id].Users[user_id] = new(user)
@@ -74,7 +74,7 @@ func maidBanUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (stri
 	}
 
 	msg_txt = fmt.Sprintf("%s *banned* %s", update.Message.From.FirstName,
-	                                    update.Message.ReplyToMessage.From.FirstName)
+	                                    memberToBan.User.FirstName)
 
 	return msg_txt, err
 }

@@ -35,7 +35,16 @@ func maidGetReplyChatMember(bot *tgbotapi.BotAPI, update tgbotapi.Update) (tgbot
 
 	var memberConfig tgbotapi.ChatConfigWithUser
 	memberConfig.ChatID = update.Message.ReplyToMessage.Chat.ID
-	memberConfig.UserID = update.Message.ReplyToMessage.From.ID
+
+	if update.Message.ReplyToMessage.NewChatMembers != nil {
+		memberConfig.UserID = (*update.Message.ReplyToMessage.NewChatMembers)[0].ID
+	} else if update.Message.ReplyToMessage.LeftChatMember != nil {
+		memberConfig.UserID = update.Message.ReplyToMessage.LeftChatMember.ID
+	} else if update.Message.ReplyToMessage.ForwardFrom != nil {
+		memberConfig.UserID = (*update.Message.ReplyToMessage.ForwardFrom).ID
+	} else {
+		memberConfig.UserID = update.Message.ReplyToMessage.From.ID
+	}
 
 	member, err = bot.GetChatMember(memberConfig)
 

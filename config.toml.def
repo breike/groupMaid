@@ -1,3 +1,5 @@
+BotAdminId = 0
 BotDebug = true
-TgBotAPI = "FILLME"
 BotDirectory = "."
+BotWhitelist = []
+TgBotAPI = "FILLME"

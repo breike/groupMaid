@@ -56,6 +56,7 @@ type chatConfig struct {
 type user struct {
 	PreferredName    string
 	Gender           string
+	Pronouns         string
 	Notes            string
 	BanNote          string
 

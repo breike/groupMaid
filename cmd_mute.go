@@ -85,10 +85,10 @@ func maidMuteUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error) 
 			if resp.Description == "Bad Request: CHAT_ADMIN_REQUIRED" {
 				msg_txt = "ERROR: bot is not admin"
 			} else {
-				msg_txt = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
+				msg_txt = "ERROR: " + strconv.Itoa(resp.ErrorCode) + " - " + resp.Description
 			}
 		} else {
-			msg_txt = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
+			msg_txt = "ERROR: " + strconv.Itoa(resp.ErrorCode) + " - " + resp.Description
 		}
 		return msg_txt, err
 	}

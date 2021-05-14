@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -31,7 +32,7 @@ func maidKickUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error) 
 
 	var member_config tgbotapi.ChatMemberConfig
 	member_config.ChatID = update.Message.ReplyToMessage.Chat.ID
-	member_config.UserID = update.Message.ReplyToMessage.From.ID
+	member_config.UserID = memberToBan.User.ID
 
 	var kick_config tgbotapi.KickChatMemberConfig
 	kick_config.ChatMemberConfig = member_config
@@ -44,16 +45,16 @@ func maidKickUser(bot *tgbotapi.BotAPI, update tgbotapi.Update) (string, error) 
 			if resp.Description == "Bad Request: CHAT_ADMIN_REQUIRED" {
 				msg_txt = "ERROR: bot is not admin"
 			} else {
-				msg_txt = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
+				msg_txt = "ERROR: " + strconv.Itoa(resp.ErrorCode) + " - " + resp.Description
 			}
 		} else {
-			msg_txt = "ERROR: " + string(resp.ErrorCode) + " - " + resp.Description
+			msg_txt = "ERROR: " + strconv.Itoa(resp.ErrorCode) + " - " + resp.Description
 		}
 		return msg_txt, err
 	}
 
 	msg_txt = fmt.Sprintf("%s *kicked* %s", update.Message.From.FirstName,
-	                      update.Message.ReplyToMessage.From.FirstName)
+	                      memberToBan.User.FirstName)
 
 	return msg_txt, err
 }
