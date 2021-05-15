@@ -106,7 +106,7 @@ func maidSetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (
 		db.Chats[chat_id].Users[user_id].Notes         = value
 	}
 
-	msg_txt = "User's info has been setted"
+	msg_txt = "User's info has been set"
 
 	err = dbWriteChatUsers(chat_id, db.Chats[chat_id].Users)
 	if err != nil {
@@ -129,6 +129,8 @@ func maidUnsetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB)
 	switch key {
 	case "ban":
 		db.Chats[chat_id].Users[user_id].BanNote       = ""
+	case "banfrom":
+		db.Chats[chat_id].Users[user_id].BanFrom       = ""
 	case "gender":
 		db.Chats[chat_id].Users[user_id].Gender        = ""
 	case "pronouns":
@@ -139,7 +141,7 @@ func maidUnsetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB)
 		db.Chats[chat_id].Users[user_id].Notes         = ""
 	}
 
-	msg_txt = "User's info has been unsetted"
+	msg_txt = "User's info has been unset"
 
 	return msg_txt, err
 }
