@@ -59,6 +59,7 @@ type user struct {
 	Pronouns         string
 	Notes            string
 	BanNote          string
+	BanFrom          string
 
 	Warns            int
 }

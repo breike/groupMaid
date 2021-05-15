@@ -53,13 +53,19 @@ func maidGetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (
 	}
 
 	ban_note := "Unknown"
+	ban_from := "Unknown"
 	if db.Chats[chat_id].Users[user_id].BanNote == "" {
 		msg_txt = fmt.Sprintf("Имя: %s\nМестоимения: %s\nГендер: %s\nЗаметки: %s",
 		                      preferred_name, pronouns, gender, notes)
 	} else {
 		ban_note = db.Chats[chat_id].Users[user_id].BanNote
-		msg_txt = fmt.Sprintf("Имя: %s\nМестоимения: %s\nГендер: %s\nЗаметки: %s\nБан: %s",
-		                      preferred_name, pronouns,  gender, notes, ban_note)
+
+		if db.Chats[chat_id].Users[user_id].BanNote != "" {
+			ban_from = db.Chats[chat_id].Users[user_id].BanFrom
+		}
+
+		msg_txt = fmt.Sprintf("Имя: %s\nМестоимения: %s\nГендер: %s\nЗаметки: %s\nБан: %s\nБан от: %s",
+		                      preferred_name, pronouns,  gender, notes, ban_note, ban_from)
 	}
 
 	return msg_txt, err
@@ -88,6 +94,8 @@ func maidSetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (
 	switch key {
 	case "ban":
 		db.Chats[chat_id].Users[user_id].BanNote       = value
+	case "banfrom":
+		db.Chats[chat_id].Users[user_id].BanFrom       = value
 	case "gender":
 		db.Chats[chat_id].Users[user_id].Gender        = value
 	case "pronouns":

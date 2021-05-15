@@ -64,6 +64,7 @@ func maidBanUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (stri
 		}
 
 		db.Chats[chat_id].Users[user_id].BanNote = ban_note
+		db.Chats[chat_id].Users[user_id].BanFrom = update.Message.From.FirstName
 
 		err = dbWriteChatUsers(chat_id, db.Chats[chat_id].Users)
 		if err != nil {
