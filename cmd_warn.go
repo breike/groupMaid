@@ -10,9 +10,16 @@ import (
 func maidWarnUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (string, error) {
 	msg_txt := ""
 	var err error = nil
+	
+	memberToWarn, err := maidGetReplyChatMember(bot, update)
+	if err != nil {
+		msg_txt = "ERROR: can't get chat member from reply, check out logs"
+
+		return msg_txt, err
+	}
 
 	chat_id := strconv.FormatInt(update.Message.Chat.ID, 10)
-	user_id := strconv.Itoa(update.Message.ReplyToMessage.From.ID)
+	user_id := strconv.Itoa(memberToWarn.User.ID)
 
 	if update.Message.ReplyToMessage == nil {
 		msg_txt = "ERROR: Reply to user you want to warn"
@@ -46,7 +53,7 @@ func maidWarnUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (str
 			}
 
 			msg_txt = fmt.Sprintf("%s reached warn limit and has been banned",
-		                          update.Message.ReplyToMessage.From.FirstName)
+		                          memberToWarn.User.FirstName)
 		case 1:
 			_, err := maidKickUser(bot, update)
 			if err != nil {
@@ -56,7 +63,7 @@ func maidWarnUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (str
 			}
 
 			msg_txt = fmt.Sprintf("%s reached warn limit and has been kicked",
-		                          update.Message.ReplyToMessage.From.FirstName)
+		                          memberToWarn.User.FirstName)
 		case 2:
 			_, err := maidMuteUser(bot, update)
 			if err != nil {
@@ -66,11 +73,11 @@ func maidWarnUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (str
 			}
 
 			msg_txt = fmt.Sprintf("%s reached warn limit and has been muted for 60 minutes",
-		                          update.Message.ReplyToMessage.From.FirstName)
+		                          memberToWarn.User.FirstName)
 		}
 	} else {
 		msg_txt = fmt.Sprintf("%s has been warned. Warns: %d/%d",
-		                      update.Message.ReplyToMessage.From.FirstName,
+		                      memberToWarn.User.FirstName,
 		                      db.Chats[chat_id].Users[user_id].Warns,
 		                      db.Chats[chat_id].Config.WarnsLimit)
 
