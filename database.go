@@ -57,9 +57,16 @@ type user struct {
 	PreferredName    string
 	Gender           string
 	Pronouns         string
+	AdminNotes       string
 	Notes            string
 	BanNote          string
 	BanFrom          string
+	// 0   - member
+	// 10  - can change user info
+	// 50  - moderator
+	// 70  - can set rules and welcome
+	// 100 - full admin rights
+	Privileges       int
 
 	Warns            int
 }
@@ -72,6 +79,7 @@ var Chat_cfg_defaults = chatConfig{
 	MuteCommandOn:       true,
 	RulesCommandOn:      true,
 
+	WarnsLimit:          3,
 	LastWelcomeID:       0,
 	WelcomeOn:           true,
 	RulesMsg:

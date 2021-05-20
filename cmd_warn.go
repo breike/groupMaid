@@ -10,7 +10,13 @@ import (
 func maidWarnUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (string, error) {
 	msg_txt := ""
 	var err error = nil
-	
+
+	if update.Message.ReplyToMessage == nil {
+		msg_txt = "ERROR: Reply to user you want to warn"
+
+		return msg_txt, err
+	}
+
 	memberToWarn, err := maidGetReplyChatMember(bot, update)
 	if err != nil {
 		msg_txt = "ERROR: can't get chat member from reply, check out logs"
@@ -20,12 +26,6 @@ func maidWarnUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (str
 
 	chat_id := strconv.FormatInt(update.Message.Chat.ID, 10)
 	user_id := strconv.Itoa(memberToWarn.User.ID)
-
-	if update.Message.ReplyToMessage == nil {
-		msg_txt = "ERROR: Reply to user you want to warn"
-
-		return msg_txt, err
-	}
 
 	if db.Chats[chat_id].Users[user_id] == nil {
 		db.Chats[chat_id].Users[user_id] = new(user)

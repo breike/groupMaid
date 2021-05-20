@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -49,4 +50,42 @@ func maidGetReplyChatMember(bot *tgbotapi.BotAPI, update tgbotapi.Update) (tgbot
 	member, err = bot.GetChatMember(memberConfig)
 
 	return member, err
+}
+
+func maidIsUserHasPrivileges(privilege_level int, bot *tgbotapi.BotAPI,
+                             update tgbotapi.Update, db *maidDB) (bool, error) {
+	var reply bool = false
+	var err error  = nil
+
+	member, err := maidGetChatMember(bot, update)
+	if err != nil {
+		return reply, err
+	}
+
+	chat_id := strconv.FormatInt(update.Message.Chat.ID, 10)
+	user_id := strconv.Itoa(member.User.ID)
+
+	if member.IsAdministrator() {
+		reply = true
+
+		return reply, err
+	}
+
+	if member.IsCreator() {
+		reply = true
+
+		return reply, err
+	}
+
+	if member.User.ID == config.BotAdminID {
+		reply = true
+
+		return reply, err
+	}
+
+	if db.Chats[chat_id].Users[user_id].Privileges >= privilege_level {
+		reply = true
+	}
+
+	return reply, err
 }

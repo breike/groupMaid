@@ -1,4 +1,4 @@
-BotAdminId = 0
+BotAdminID = 0
 BotDebug = true
 BotDirectory = "."
 BotWhitelist = []

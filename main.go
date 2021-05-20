@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"strings"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
@@ -124,46 +123,39 @@ func main() {
 			continue
 		}
 
+		/*
 		memberFromCmd, err := maidGetChatMember(bot, update)
 		if err != nil {
 			msg.Text = "ERROR: internal error check log for the further info"
 		}
+		*/
 
 		if update.Message.IsCommand() {
 			switch update.Message.Command() {
 			case "ban":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
-					msg.Text = "ERROR: not admin"
+				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
 				} else {
 					msg.Text, err = maidBanUser(bot, update, &db)
 				}
 			case "config":
-				args_list := strings.Split(update.Message.Text, " ")
-				if len(args_list) > 1 {
-					if args_list[1] == "get" {
-						if len(args_list) > 2 {
-							msg.Text, err = maidGetChatConfig(bot, update, &db, args_list[2])
-							if err != nil {
-								log.Println("ERROR: can't get chat config: ", err)
-							}
-						} else {
-							msg.Text, err = maidGetChatConfig(bot, update, &db, "")
-							if err != nil {
-								log.Println("ERROR: can't get chat config: ", err)
-							}
-						}
-					} else if args_list[1] == "set" {
-						if len(args_list) > 3 {
-							msg.Text, err = maidSetChatConfig(bot, update, &db, args_list[2], args_list[3])
-							if err != nil {
-								log.Println("ERROR: can't set chat config: ", err)
-							}
-						} else {
-							msg.Text = "ERROR: /config set syntax: `/config set %key% %value%`"
-						}
-					}
+				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
 				} else {
-					msg.Text = "need `set` or `get` command for config"
+					msg.Text, err = maidChatConfig(bot, update, &db)
+					if err != nil {
+						log.Println("ERROR: some problems with maidChatConfig: ", err)
+					}
 				}
 
 			case "help":
@@ -174,8 +166,13 @@ func main() {
 					log.Println("ERROR: Failed to unset user info: ", err)
 				}
 			case "kick":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
-					msg.Text = "ERROR: not admin"
+				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
 				} else {
 					msg.Text, err = maidKickUser(bot, update)
 				}
@@ -183,38 +180,124 @@ func main() {
 					log.Println("ERROR: Failed to kick user: ", err)
 				}
 			case "mute":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
-					msg.Text = "ERROR: not admin"
+				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
 				} else {
 					msg.Text, err = maidMuteUser(bot, update)
+				}
+			case "remove":
+				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
+				} else {
+					msg.Text, err = maidRemoveUserInfo(bot, update, &db)
+				}
+				if err != nil {
+					log.Println("ERROR: Failed to remove user data: ", err)
 				}
 			case "rules":
 				msg.Text, err = maidGetRules(bot, update, &db)
 				msg.DisableWebPagePreview = db.Chats[chat_id].Config.RulesDisableWebPagePreview
 
 			case "set":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
-					msg.Text = "ERROR: not admin"
+				has_privileges, err := maidIsUserHasPrivileges(10, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
 				} else {
 					msg.Text, err = maidSetUserInfo(bot, update, &db)
 					if err != nil {
 						log.Println("ERROR: Failed to set user info: ", err)
 					}
 				}
-
 			case "setrules":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
-					msg.Text = "ERROR: not admin"
+				has_privileges, err := maidIsUserHasPrivileges(70, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
 				} else {
 					msg.Text, err = maidSetRules(bot, update, &db)
 				}
 			case "setwelcome":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
-					msg.Text = "ERROR: not admin"
+				has_privileges, err := maidIsUserHasPrivileges(70, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
 				} else {
 					msg.Text, err = maidSetWelcome(bot, update, &db)
 					if err != nil {
 						log.Println("ERROR: Failed to set welcome message: ", err)
+					}
+				}
+			case "status":
+				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
+				} else {
+					msg.Text, err = maidGetUserStatus(bot, update, &db)
+				}
+				if err != nil {
+					log.Println("ERROR: Failed to reset warns: ", err)
+				}
+			case "unmute":
+				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
+				} else {
+					msg.Text, err = maidUnmuteUser(bot, update)
+				}
+			case "unset":
+				has_privileges, err := maidIsUserHasPrivileges(10, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
+				} else {
+					msg.Text, err = maidUnsetUserInfo(bot, update, &db)
+					if err != nil {
+						log.Println("ERROR: Failed to unset user info: ", err)
+					}
+				}
+			case "warn":
+				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you are not have needed privileges"
+				} else {
+					msg.Text, err = maidWarnUser(bot, update, &db)
+					if err != nil {
+						log.Println("ERROR: failed to warn user: ", err)
 					}
 				}
 			case "welcome":
@@ -236,38 +319,20 @@ func main() {
 
 					continue
 				}
-			case "warn":
-				msg.Text, err = maidWarnUser(bot, update, &db)
+			}
+
+			if err != nil {
+				log.Println("ERROR: ", err)
+			}
+
+			if msg.Text != "" {
+				resp, err := bot.Send(msg)
 				if err != nil {
-					log.Println("ERROR: failed to warn user: ", err)
-				}
-			case "unmute":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
-					msg.Text = "ERROR: not admin"
+					log.Println("ERROR: ", err)
 				} else {
-					msg.Text, err = maidUnmuteUser(bot, update)
-				}
-			case "unset":
-				if !(memberFromCmd.IsAdministrator()) && !(memberFromCmd.IsCreator()) && !(memberFromCmd.User.ID == config.BotAdminId) {
-					msg.Text = "ERROR: not admin"
-				} else {
-					msg.Text, err = maidUnsetUserInfo(bot, update, &db)
-					if err != nil {
-						log.Println("ERROR: Failed to unset user info: ", err)
-					}
+					log.Println("LOG: message sent: ", resp)
 				}
 			}
-
-			if err != nil {
-				log.Println("ERROR: ", err)
-			}
-
-			resp, err := bot.Send(msg)
-			if err != nil {
-				log.Println("ERROR: ", err)
-			}
-
-			log.Println("LOG: message sent: ", resp)
 		}
 	}
 }

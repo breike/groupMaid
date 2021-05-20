@@ -1,15 +1,60 @@
 package main
 
-import (
-	"fmt"
+import ( "fmt"
 	"strconv"
+	"strings"
 
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
+func maidChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (string, error) {
+	var msg_txt string = ""
+	var err error      = nil
+
+	args_list := strings.Split(update.Message.Text, " ")
+	if len(args_list) > 1 {
+		if args_list[1] == "get" {
+			if len(args_list) > 2 {
+				msg_txt, err = maidGetChatConfig(bot, update, db, args_list[2])
+				if err != nil {
+					msg_txt = "ERROR: can't get chat config, see logs for further info."
+
+					return msg_txt, err
+				}
+			} else {
+				msg_txt, err = maidGetChatConfig(bot, update, db, "")
+				if err != nil {
+					msg_txt = "ERROR: can't get chat config, see logs for further info."
+
+					return msg_txt, err
+				}
+			}
+		} else if args_list[1] == "set" {
+			if len(args_list) > 3 {
+				msg_txt, err = maidSetChatConfig(bot, update, db, args_list[2], args_list[3])
+				if err != nil {
+					msg_txt = "ERROR: can't set chat config, see logs for further info."
+
+					return msg_txt, err
+				}
+			} else {
+				msg_txt = "ERROR: /config set syntax: `/config set %key% %value%`"
+
+				return msg_txt, err
+			}
+		}
+	} else {
+		msg_txt = "ERROR: need `set` or `get` command for config."
+
+		return msg_txt, err
+	}
+
+	return msg_txt, err
+}
+
 func maidGetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB, key string) (string, error) {
-	msg_txt         := ""
-	var err error    = nil
+	var msg_txt string = ""
+	var err error      = nil
 
 	chat_id := strconv.FormatInt(update.Message.Chat.ID, 10)
 
@@ -71,40 +116,27 @@ func maidGetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 								  warns_action)
 		}
 	} else {
-		msg_txt = fmt.Sprintf("Config for %s:\n" +
-							  "ban\\_command\\_on: %t\n" +
-							  "delete\\_last\\_welcome: %t\n" +
-							  "disable\\_web\\_page\\_preview: %t\n" +
-							  "welcome\\_disable\\_web\\_page\\_preview: %t\n" +
-							  "rules\\_disable\\_web\\_page\\_preview: %t\n" +
-							  "help\\_command\\_on: %t\n" +
-							  "info\\_command\\_on: %t\n" +
-							  "mute\\_command\\_on: %t\n" +
-							  "rules\\_command\\_on: %t\n" +
-							  "welcome\\_on: %t\n" +
-							  "warns\\_limit: %d\n" +
-							  "warns\\_action: %d (%s)\n",
-							  chat_name,
-							  db.Chats[chat_id].Config.BanCommandOn,
-							  db.Chats[chat_id].Config.DeleteLastWelcome,
-							  db.Chats[chat_id].Config.DisableWebPagePreview,
-							  db.Chats[chat_id].Config.WelcomeDisableWebPagePreview,
-							  db.Chats[chat_id].Config.RulesDisableWebPagePreview,
-							  db.Chats[chat_id].Config.HelpCommandOn,
-							  db.Chats[chat_id].Config.InfoCommandOn,
-							  db.Chats[chat_id].Config.MuteCommandOn,
-							  db.Chats[chat_id].Config.RulesCommandOn,
-							  db.Chats[chat_id].Config.WelcomeOn,
-							  db.Chats[chat_id].Config.WarnsLimit,
-							  db.Chats[chat_id].Config.WarnsAction, warns_action)
+		msg_txt = "Config for: " + chat_name + " (" + strconv.FormatInt(update.Message.Chat.ID, 10) + ")"
+		msg_txt = msg_txt + "\nban\\_command\\_on: " + strconv.FormatBool(db.Chats[chat_id].Config.BanCommandOn)
+		msg_txt = msg_txt + "\ndelete\\_last\\_welcome: " + strconv.FormatBool(db.Chats[chat_id].Config.DeleteLastWelcome)
+		msg_txt = msg_txt + "\ndisable\\_web\\_page\\_preview: " + strconv.FormatBool(db.Chats[chat_id].Config.DisableWebPagePreview)
+		msg_txt = msg_txt + "\nwelcome_\\disable\\_web\\_page\\_preview: " + strconv.FormatBool(db.Chats[chat_id].Config.WelcomeDisableWebPagePreview)
+		msg_txt = msg_txt + "\nrules_\\disable\\_web\\_page\\_preview: " + strconv.FormatBool(db.Chats[chat_id].Config.RulesDisableWebPagePreview)
+		msg_txt = msg_txt + "\nhelp\\_command\\_on: " + strconv.FormatBool(db.Chats[chat_id].Config.HelpCommandOn)
+		msg_txt = msg_txt + "\ninfo\\_command\\_on: " + strconv.FormatBool(db.Chats[chat_id].Config.InfoCommandOn)
+		msg_txt = msg_txt + "\nmute\\_command\\_on: " + strconv.FormatBool(db.Chats[chat_id].Config.MuteCommandOn)
+		msg_txt = msg_txt + "\nrules\\_command\\_on: " + strconv.FormatBool(db.Chats[chat_id].Config.RulesCommandOn)
+		msg_txt = msg_txt + "\nwelcome\\_on: " + strconv.FormatBool(db.Chats[chat_id].Config.WelcomeOn)
+		msg_txt = msg_txt + "\nwarns\\_limit: " + strconv.Itoa(db.Chats[chat_id].Config.WarnsLimit)
+		msg_txt = msg_txt + "\nwarns\\_action: " + strconv.Itoa(db.Chats[chat_id].Config.WarnsAction) + " (" + warns_action + ")"
 	}
 
 	return msg_txt, err
 }
 
 func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB, key string, value string) (string, error) {
-	msg_txt         := ""
-	var err error    = nil
+	var msg_txt string = ""
+	var err error      = nil
 
 	chat_id := strconv.FormatInt(update.Message.Chat.ID, 10)
 

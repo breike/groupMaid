@@ -7,7 +7,7 @@ import (
 )
 
 type maidConfig struct {
-	BotAdminId   int
+	BotAdminID   int
 	BotDebug     bool
 	BotDirectory string
 	BotWhitelist []int64
