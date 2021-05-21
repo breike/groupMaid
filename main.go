@@ -86,7 +86,10 @@ func main() {
 		if _, ok := db.Chats[chat_id]; !(ok) {
 			var chat_cfg = Chat_cfg_defaults
 
-			err := dbWriteChatConfig(chat_id, chat_cfg, &db)
+			db.Chats[chat_id] = new(chat)
+			db.Chats[chat_id].Config = chat_cfg
+
+			err := dbWriteChatConfig(chat_id, chat_cfg)
 			if err != nil {
 				log.Fatal("ERROR: can't write chat config: ", err)
 			}
@@ -115,7 +118,7 @@ func main() {
 			log.Println("LOG: message sent: ", resp)
 
 			db.Chats[chat_id].Config.LastWelcomeID = resp.MessageID
-			err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, &db)
+			err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 			if err != nil {
 				log.Fatal("ERROR: can't write chat config: ", err)
 			}
@@ -139,7 +142,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidBanUser(bot, update, &db)
 				}
@@ -150,7 +153,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidChatConfig(bot, update, &db)
 					if err != nil {
@@ -172,7 +175,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidKickUser(bot, update)
 				}
@@ -186,7 +189,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidMuteUser(bot, update)
 				}
@@ -197,7 +200,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidRemoveUserInfo(bot, update, &db)
 				}
@@ -215,7 +218,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidSetUserInfo(bot, update, &db)
 					if err != nil {
@@ -229,7 +232,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidSetRules(bot, update, &db)
 				}
@@ -240,7 +243,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidSetWelcome(bot, update, &db)
 					if err != nil {
@@ -254,7 +257,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidGetUserStatus(bot, update, &db)
 				}
@@ -268,7 +271,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidUnmuteUser(bot, update)
 				}
@@ -279,11 +282,25 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidUnsetUserInfo(bot, update, &db)
 					if err != nil {
 						log.Println("ERROR: Failed to unset user info: ", err)
+					}
+				}
+			case "update":
+				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you do not have needed privileges"
+				} else {
+					msg.Text, err = maidUpdate(bot, update, &db)
+					if err != nil {
+						log.Println("ERROR: failed to warn user: ", err)
 					}
 				}
 			case "warn":
@@ -293,7 +310,7 @@ func main() {
 				}
 
 				if !(has_privileges) {
-					msg.Text = "ERROR: you are not have needed privileges"
+					msg.Text = "ERROR: you do not have needed privileges"
 				} else {
 					msg.Text, err = maidWarnUser(bot, update, &db)
 					if err != nil {
@@ -312,7 +329,7 @@ func main() {
 					log.Println("LOG: message sent: ", resp)
 
 					db.Chats[chat_id].Config.LastWelcomeID = resp.MessageID
-					err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, &db)
+					err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 					if err != nil {
 						log.Fatal("ERROR: can't write chat config: ", err)
 					}

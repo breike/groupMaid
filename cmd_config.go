@@ -154,7 +154,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.BanCommandOn = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -175,7 +175,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.DeleteLastWelcome = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -196,7 +196,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.DisableWebPagePreview = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -217,7 +217,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.WelcomeDisableWebPagePreview = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -238,7 +238,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.RulesDisableWebPagePreview = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -259,7 +259,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.HelpCommandOn = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -280,7 +280,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.InfoCommandOn = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -301,7 +301,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.MuteCommandOn = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -322,7 +322,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.RulesCommandOn = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -343,7 +343,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 			db.Chats[chat_id].Config.WelcomeOn = false
 		}
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -361,7 +361,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 
 		db.Chats[chat_id].Config.WarnsLimit = warns_limit
 
-		err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -379,7 +379,7 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 
 		db.Chats[chat_id].Config.WarnsAction = warns_action
 
-		err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+		err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 

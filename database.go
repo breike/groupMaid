@@ -204,7 +204,7 @@ func dbInit() (maidDB, error) {
 	return db, err
 }
 
-func dbWriteChatConfig(chat_id string, chat_cfg chatConfig, db *maidDB) (error) {
+func dbWriteChatConfig(chat_id string, chat_cfg chatConfig) (error) {
 	var err error = nil
 
 	db_dir    := filepath.Join(config.BotDirectory, "db")
@@ -234,8 +234,6 @@ func dbWriteChatConfig(chat_id string, chat_cfg chatConfig, db *maidDB) (error) 
 	if err != nil {
 		return err
 	}
-
-	db.Chats[chat_id].Config = chat_cfg
 
 	return err
 }

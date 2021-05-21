@@ -56,22 +56,24 @@ func maidBanUser(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (stri
 		return msg_txt, err
 	}
 
+	if db.Chats[chat_id].Users[user_id] == nil {
+		db.Chats[chat_id].Users[user_id] = new(user)
+	}
+
 	if len(strings.Split(update.Message.Text, " ")) > 1 {
 		ban_note := strings.Replace(update.Message.Text, "/ban ", "", 1)
 
-		if db.Chats[chat_id].Users[user_id] == nil {
-			db.Chats[chat_id].Users[user_id] = new(user)
-		}
-
 		db.Chats[chat_id].Users[user_id].BanNote = ban_note
-		db.Chats[chat_id].Users[user_id].BanFrom = update.Message.From.FirstName
 
-		err = dbWriteChatUsers(chat_id, db.Chats[chat_id].Users)
-		if err != nil {
-			msg_txt = "ERROR: can't write ban description, check out logs"
+	}
 
-			return msg_txt, err
-		}
+	db.Chats[chat_id].Users[user_id].BanFrom = update.Message.From.FirstName
+
+	err = dbWriteChatUsers(chat_id, db.Chats[chat_id].Users)
+	if err != nil {
+		msg_txt = "ERROR: can't write ban description, check out logs"
+
+		return msg_txt, err
 	}
 
 	msg_txt = fmt.Sprintf("%s *banned* %s", update.Message.From.FirstName,

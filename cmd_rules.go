@@ -31,7 +31,7 @@ func maidSetRules(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (str
 
 	db.Chats[chat_id].Config.RulesMsg = rules_text
 
-	err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config, db)
+	err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 	if err != nil {
 		return msg_txt, err
 	}
