@@ -168,15 +168,15 @@ func maidSetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (
 	msg_txt := ""
 	var err error = nil
 
-	chat_id  := strconv.FormatInt(update.Message.Chat.ID, 10)
-	user_id  := strconv.Itoa(update.Message.ReplyToMessage.From.ID)
-	admin_id := strconv.Itoa(update.Message.From.ID)
-
 	if update.Message.ReplyToMessage == nil {
 		msg_txt = "ERROR: Reply to user you want to set info."
 
 		return msg_txt, err
 	}
+
+	chat_id  := strconv.FormatInt(update.Message.Chat.ID, 10)
+	user_id  := strconv.Itoa(update.Message.ReplyToMessage.From.ID)
+	admin_id := strconv.Itoa(update.Message.From.ID)
 
 	if db.Chats[chat_id].Users[user_id] == nil {
 		db.Chats[chat_id].Users[user_id] = new(user)

@@ -83,6 +83,12 @@ func maidIsUserHasPrivileges(privilege_level int, bot *tgbotapi.BotAPI,
 		return reply, err
 	}
 
+    if db.Chats[chat_id].Users[user_id] == nil {
+        db.Chats[chat_id].Users[user_id] = new(user)
+
+    }
+
+    // TODO: SIGSEGV null pointer dereference
 	if db.Chats[chat_id].Users[user_id].Privileges >= privilege_level {
 		reply = true
 	}
