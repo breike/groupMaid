@@ -182,7 +182,7 @@ func maidSetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (
 		db.Chats[chat_id].Users[user_id] = new(user)
 	}
 
-    if strconv.Itoa(config.BotAdminId) == admin_id {
+    if strconv.Itoa(config.BotAdminID) == admin_id {
         db.Chats[chat_id].Users[admin_id].Privileges = 100
     }
 
@@ -257,7 +257,7 @@ func maidUnsetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB)
         db.Chats[chat_id].Users[admin_id] = new(user)
     }
 
-    if strconv.Itoa(config.BotAdminId) == admin_id {
+    if strconv.Itoa(config.BotAdminID) == admin_id {
         db.Chats[chat_id].Users[admin_id].Privileges = 100
     }
 
