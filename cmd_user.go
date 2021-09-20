@@ -182,6 +182,10 @@ func maidSetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (
 		db.Chats[chat_id].Users[user_id] = new(user)
 	}
 
+    if config.BotAdminID == admin_id {
+        db.Chats[chat_id].Users[admin_id].Privileges = 100
+    }
+
 	key   := strings.Split(update.Message.Text, " ")[1]
 	value := strings.Split(update.Message.Text, " " + key + " ")[1]
 
@@ -248,6 +252,14 @@ func maidUnsetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB)
 	admin_id := strconv.Itoa(update.Message.From.ID)
 
 	key   := strings.Split(update.Message.Text, " ")[1]
+
+    if db.Chats[chat_id].Users[admin_id] == nil {
+        db.Chats[chat_id].Users[admin_id] = new(user)
+    }
+
+    if config.BotAdminID == admin_id {
+        db.Chats[chat_id].Users[admin_id].Privileges = 100
+    }
 
 	switch key {
 	case "adminnotes":
