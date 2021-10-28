@@ -187,10 +187,10 @@ func maidSetUserInfo(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (
     }
 
 	key   := strings.Split(update.Message.Text, " ")[1]
-    if value != "" {
-        value := strings.Split(update.Message.Text, " " + key + " ")[1]
-    } else {
-        value := ""
+
+    var value string = ""
+    if len(strings.Split(update.Message.Text, " " + key + " ")) > 1  {
+        value = strings.Split(update.Message.Text, " " + key + " ")[1]
     }
 
 	switch key {
