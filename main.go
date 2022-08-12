@@ -209,7 +209,7 @@ func main() {
 				} else {
 					msg.Text, err = maidBanUser(bot, update, &db)
 				}
-			case db.Chats[chat_id].Config.HelpCmd:
+			case db.Chats[chat_id].Config.ConfigCmd:
 				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -274,7 +274,7 @@ func main() {
 				msg.Text, err = maidGetRules(bot, update, &db)
 				msg.DisableWebPagePreview = db.Chats[chat_id].Config.RulesDisableWebPagePreview
 
-			case db.Chats[chat_id].Config.RulesCmd:
+			case db.Chats[chat_id].Config.SetCmd:
 				has_privileges, err := maidIsUserHasPrivileges(10, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
