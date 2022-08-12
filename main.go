@@ -415,7 +415,6 @@ func main() {
 				}
 			}
 
-			continue
 		}
 	}
 }
