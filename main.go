@@ -179,7 +179,6 @@ func main() {
 			if err != nil {
 				log.Println("ERROR: ", err)
 
-				continue
 			}
 
 			log.Println("LOG: message sent: ", resp)
@@ -190,7 +189,6 @@ func main() {
 				log.Fatal("ERROR: can't write chat config: ", err)
 			}
 
-			continue
 		}
 
 		/*
@@ -400,6 +398,8 @@ func main() {
 					if err != nil {
 						log.Fatal("ERROR: can't write chat config: ", err)
 					}
+
+					continue
 				}
 			}
 
