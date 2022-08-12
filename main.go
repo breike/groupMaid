@@ -148,8 +148,6 @@ func main() {
 			db.Chats[chat_id].Config.UnmuteCmd = "unmute"
 		}
 
-		}
-
 		if db.Chats[chat_id].Config.UpdateCmd == "" {
 			db.Chats[chat_id].Config.UpdateCmd = "update"
 		}
