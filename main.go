@@ -406,7 +406,19 @@ func main() {
 					continue
 				}
             default:
-					msg.Text = "default command for command i don't know"
+				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
+				if err != nil {
+					log.Println("ERROR: can't check user privileges: ", err)
+				}
+
+				if !(has_privileges) {
+					msg.Text = "ERROR: you do not have needed privileges"
+				} else {
+					msg.Text, err = maidChatConfig(bot, update, &db)
+					if err != nil {
+						log.Println("ERROR: some problems with maidChatConfig: ", err)
+					}
+				}
 			}
 
 			if err != nil {
