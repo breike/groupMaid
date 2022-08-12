@@ -400,8 +400,6 @@ func main() {
 					if err != nil {
 						log.Fatal("ERROR: can't write chat config: ", err)
 					}
-
-					continue
 				}
 			}
 
