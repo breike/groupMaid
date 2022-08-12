@@ -129,7 +129,7 @@ func main() {
 		}
 
 		if db.Chats[chat_id].Config.SetCmd == "" {
-			db.Chats[chat_id].Config.RulesCmd = "/set"
+			db.Chats[chat_id].Config.SetCmd = "/set"
 		}
 
 		if db.Chats[chat_id].Config.SetrulesCmd == "" {
@@ -161,7 +161,7 @@ func main() {
 		}
 
 		if db.Chats[chat_id].Config.WelcomeCmd == "" {
-			db.Chats[chat_id].Config.WarnCmd = "/welcome"
+			db.Chats[chat_id].Config.WelcomeCmd = "/welcome"
 		}
 
 		if db.Chats[chat_id].Users == nil {
@@ -405,6 +405,8 @@ func main() {
 
 					continue
 				}
+            default:
+					msg.Text = "default command for command i don't know"
 			}
 
 			if err != nil {
