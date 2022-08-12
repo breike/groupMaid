@@ -399,7 +399,6 @@ func main() {
 						log.Fatal("ERROR: can't write chat config: ", err)
 					}
 
-					continue
 				}
 			}
 
@@ -415,6 +414,8 @@ func main() {
 					log.Println("LOG: message sent: ", resp)
 				}
 			}
+
+			continue
 		}
 	}
 }
