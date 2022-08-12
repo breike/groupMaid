@@ -97,71 +97,69 @@ func main() {
 		}
 
 		if db.Chats[chat_id].Config.BanCmd == "" {
-			db.Chats[chat_id].Config.BanCmd = "/ban"
+			db.Chats[chat_id].Config.BanCmd = "ban"
 		}
 
 		if db.Chats[chat_id].Config.ConfigCmd == "" {
-			db.Chats[chat_id].Config.ConfigCmd = "/config"
+			db.Chats[chat_id].Config.ConfigCmd = "config"
 		}
 
 		if db.Chats[chat_id].Config.HelpCmd == "" {
-			db.Chats[chat_id].Config.HelpCmd = "/help"
+			db.Chats[chat_id].Config.HelpCmd = "help"
 		}
 
 		if db.Chats[chat_id].Config.InfoCmd == "" {
-			db.Chats[chat_id].Config.InfoCmd = "/info"
+			db.Chats[chat_id].Config.InfoCmd = "info"
 		}
 
 		if db.Chats[chat_id].Config.KickCmd == "" {
-			db.Chats[chat_id].Config.KickCmd = "/kick"
+			db.Chats[chat_id].Config.KickCmd = "kick"
 		}
 
 		if db.Chats[chat_id].Config.MuteCmd == "" {
-			db.Chats[chat_id].Config.MuteCmd = "/mute"
+			db.Chats[chat_id].Config.MuteCmd = "mute"
 		}
 
 		if db.Chats[chat_id].Config.RemoveCmd == "" {
-			db.Chats[chat_id].Config.RemoveCmd = "/remove"
+			db.Chats[chat_id].Config.RemoveCmd = "remove"
 		}
 
 		if db.Chats[chat_id].Config.RulesCmd == "" {
-			db.Chats[chat_id].Config.RulesCmd = "/rules"
+			db.Chats[chat_id].Config.RulesCmd = "rules"
 		}
 
 		if db.Chats[chat_id].Config.SetCmd == "" {
-			db.Chats[chat_id].Config.SetCmd = "/set"
+			db.Chats[chat_id].Config.SetCmd = "set"
 		}
 
 		if db.Chats[chat_id].Config.SetrulesCmd == "" {
-			db.Chats[chat_id].Config.SetrulesCmd = "/setrules"
+			db.Chats[chat_id].Config.SetrulesCmd = "setrules"
 		}
 
 		if db.Chats[chat_id].Config.SetwelcomeCmd == "" {
-			db.Chats[chat_id].Config.SetwelcomeCmd = "/setwelcome"
+			db.Chats[chat_id].Config.SetwelcomeCmd = "setwelcome"
 		}
 
 		if db.Chats[chat_id].Config.StatusCmd == "" {
-			db.Chats[chat_id].Config.StatusCmd = "/status"
+			db.Chats[chat_id].Config.StatusCmd = "status"
 		}
 
 		if db.Chats[chat_id].Config.UnmuteCmd == "" {
-			db.Chats[chat_id].Config.UnmuteCmd = "/unmute"
+			db.Chats[chat_id].Config.UnmuteCmd = "unmute"
 		}
 
-		if db.Chats[chat_id].Config.UnsetCmd == "" {
-			db.Chats[chat_id].Config.UnsetCmd = "/unset"
 		}
 
 		if db.Chats[chat_id].Config.UpdateCmd == "" {
-			db.Chats[chat_id].Config.UpdateCmd = "/update"
+			db.Chats[chat_id].Config.UpdateCmd = "update"
 		}
 
 		if db.Chats[chat_id].Config.WarnCmd == "" {
-			db.Chats[chat_id].Config.WarnCmd = "/warn"
+			db.Chats[chat_id].Config.WarnCmd = "warn"
 		}
 
 		if db.Chats[chat_id].Config.WelcomeCmd == "" {
-			db.Chats[chat_id].Config.WelcomeCmd = "/welcome"
+			db.Chats[chat_id].Config.WelcomeCmd = "welcome"
 		}
 
 		if db.Chats[chat_id].Users == nil {
@@ -215,7 +213,7 @@ func main() {
 				} else {
 					msg.Text, err = maidBanUser(bot, update, &db)
 				}
-			case "/config":
+			case db.Chats[chat_id].Config.HelpCmd:
 				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -280,7 +278,7 @@ func main() {
 				msg.Text, err = maidGetRules(bot, update, &db)
 				msg.DisableWebPagePreview = db.Chats[chat_id].Config.RulesDisableWebPagePreview
 
-			case "/set":
+			case db.Chats[chat_id].Config.RulesCmd:
 				has_privileges, err := maidIsUserHasPrivileges(10, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -404,20 +402,6 @@ func main() {
 					}
 
 					continue
-				}
-            default:
-				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
-				if err != nil {
-					log.Println("ERROR: can't check user privileges: ", err)
-				}
-
-				if !(has_privileges) {
-					msg.Text = "ERROR: you do not have needed privileges"
-				} else {
-					msg.Text, err = maidChatConfig(bot, update, &db)
-					if err != nil {
-						log.Println("ERROR: some problems with maidChatConfig: ", err)
-					}
 				}
 			}
 
