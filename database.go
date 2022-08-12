@@ -46,6 +46,24 @@ type chatConfig struct {
 	RulesMsg                        string
 	WelcomeMsg                      string
 
+	BanCmd                          string
+	ConfigCmd                       string
+	HelpCmd                         string
+	InfoCmd                         string
+	KickCmd                         string
+	MuteCmd                         string
+	RemoveCmd                       string
+	RulesCmd                        string
+	SetCmd                          string
+	SetrulesCmd                     string
+	SetwelcomeCmd                   string
+	StatusCmd                       string
+	UnmuteCmd                       string
+	UnsetCmd                        string
+	UpdateCmd                       string
+	WarnCmd                         string
+	WelcomeCmd                      string
+
 	WarnsLimit                      int
 	// 0 - ban
 	// 1 - kick
@@ -78,6 +96,12 @@ var Chat_cfg_defaults = chatConfig{
 	InfoCommandOn:       true,
 	MuteCommandOn:       true,
 	RulesCommandOn:      true,
+
+	BanCmd:              "/ban",
+	InfoCmd:             "/info",
+	MuteCmd:             "/mute",
+	KickCmd:             "/kick",
+	WarnCmd:             "/warn",
 
 	WarnsLimit:          3,
 	LastWelcomeID:       0,

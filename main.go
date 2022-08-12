@@ -89,10 +89,79 @@ func main() {
 			db.Chats[chat_id] = new(chat)
 			db.Chats[chat_id].Config = chat_cfg
 
+
 			err := dbWriteChatConfig(chat_id, chat_cfg)
 			if err != nil {
 				log.Fatal("ERROR: can't write chat config: ", err)
 			}
+		}
+
+		if db.Chats[chat_id].Config.BanCmd == "" {
+			db.Chats[chat_id].Config.BanCmd = "/ban"
+		}
+
+		if db.Chats[chat_id].Config.ConfigCmd == "" {
+			db.Chats[chat_id].Config.ConfigCmd = "/config"
+		}
+
+		if db.Chats[chat_id].Config.HelpCmd == "" {
+			db.Chats[chat_id].Config.HelpCmd = "/help"
+		}
+
+		if db.Chats[chat_id].Config.InfoCmd == "" {
+			db.Chats[chat_id].Config.InfoCmd = "/info"
+		}
+
+		if db.Chats[chat_id].Config.KickCmd == "" {
+			db.Chats[chat_id].Config.KickCmd = "/kick"
+		}
+
+		if db.Chats[chat_id].Config.MuteCmd == "" {
+			db.Chats[chat_id].Config.MuteCmd = "/mute"
+		}
+
+		if db.Chats[chat_id].Config.RemoveCmd == "" {
+			db.Chats[chat_id].Config.RemoveCmd = "/remove"
+		}
+
+		if db.Chats[chat_id].Config.RulesCmd == "" {
+			db.Chats[chat_id].Config.RulesCmd = "/rules"
+		}
+
+		if db.Chats[chat_id].Config.SetCmd == "" {
+			db.Chats[chat_id].Config.RulesCmd = "/set"
+		}
+
+		if db.Chats[chat_id].Config.SetrulesCmd == "" {
+			db.Chats[chat_id].Config.SetrulesCmd = "/setrules"
+		}
+
+		if db.Chats[chat_id].Config.SetwelcomeCmd == "" {
+			db.Chats[chat_id].Config.SetwelcomeCmd = "/setwelcome"
+		}
+
+		if db.Chats[chat_id].Config.StatusCmd == "" {
+			db.Chats[chat_id].Config.StatusCmd = "/status"
+		}
+
+		if db.Chats[chat_id].Config.UnmuteCmd == "" {
+			db.Chats[chat_id].Config.UnmuteCmd = "/unmute"
+		}
+
+		if db.Chats[chat_id].Config.UnsetCmd == "" {
+			db.Chats[chat_id].Config.UnsetCmd = "/unset"
+		}
+
+		if db.Chats[chat_id].Config.UpdateCmd == "" {
+			db.Chats[chat_id].Config.UpdateCmd = "/update"
+		}
+
+		if db.Chats[chat_id].Config.WarnCmd == "" {
+			db.Chats[chat_id].Config.WarnCmd = "/warn"
+		}
+
+		if db.Chats[chat_id].Config.WelcomeCmd == "" {
+			db.Chats[chat_id].Config.WarnCmd = "/welcome"
 		}
 
 		if db.Chats[chat_id].Users == nil {
@@ -135,7 +204,7 @@ func main() {
 
 		if update.Message.IsCommand() {
 			switch update.Message.Command() {
-			case "ban":
+			case db.Chats[chat_id].Config.BanCmd:
 				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -146,7 +215,7 @@ func main() {
 				} else {
 					msg.Text, err = maidBanUser(bot, update, &db)
 				}
-			case "config":
+			case db.Chats[chat_id].Config.ConfigCmd:
 				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -161,14 +230,14 @@ func main() {
 					}
 				}
 
-			case "help":
+			case db.Chats[chat_id].Config.HelpCmd:
 				msg.Text, err = "type /hey", nil
-			case "info":
+			case db.Chats[chat_id].Config.InfoCmd:
 				msg.Text, err = maidGetUserInfo(bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: Failed to unset user info: ", err)
 				}
-			case "kick":
+			case db.Chats[chat_id].Config.KickCmd:
 				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -182,7 +251,7 @@ func main() {
 				if err != nil {
 					log.Println("ERROR: Failed to kick user: ", err)
 				}
-			case "mute":
+			case db.Chats[chat_id].Config.MuteCmd:
 				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -193,7 +262,7 @@ func main() {
 				} else {
 					msg.Text, err = maidMuteUser(bot, update)
 				}
-			case "remove":
+			case db.Chats[chat_id].Config.RemoveCmd:
 				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -207,11 +276,11 @@ func main() {
 				if err != nil {
 					log.Println("ERROR: Failed to remove user data: ", err)
 				}
-			case "rules":
+			case db.Chats[chat_id].Config.RulesCmd:
 				msg.Text, err = maidGetRules(bot, update, &db)
 				msg.DisableWebPagePreview = db.Chats[chat_id].Config.RulesDisableWebPagePreview
 
-			case "set":
+			case db.Chats[chat_id].Config.SetCmd:
 				has_privileges, err := maidIsUserHasPrivileges(10, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -225,7 +294,7 @@ func main() {
 						log.Println("ERROR: Failed to set user info: ", err)
 					}
 				}
-			case "setrules":
+			case db.Chats[chat_id].Config.SetrulesCmd:
 				has_privileges, err := maidIsUserHasPrivileges(70, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -236,7 +305,7 @@ func main() {
 				} else {
 					msg.Text, err = maidSetRules(bot, update, &db)
 				}
-			case "setwelcome":
+			case db.Chats[chat_id].Config.SetwelcomeCmd:
 				has_privileges, err := maidIsUserHasPrivileges(70, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -250,7 +319,7 @@ func main() {
 						log.Println("ERROR: Failed to set welcome message: ", err)
 					}
 				}
-			case "status":
+			case db.Chats[chat_id].Config.StatusCmd:
 				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -264,7 +333,7 @@ func main() {
 				if err != nil {
 					log.Println("ERROR: Failed to reset warns: ", err)
 				}
-			case "unmute":
+			case db.Chats[chat_id].Config.UnmuteCmd:
 				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -275,7 +344,7 @@ func main() {
 				} else {
 					msg.Text, err = maidUnmuteUser(bot, update)
 				}
-			case "unset":
+			case db.Chats[chat_id].Config.UnsetCmd:
 				has_privileges, err := maidIsUserHasPrivileges(10, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -289,7 +358,7 @@ func main() {
 						log.Println("ERROR: Failed to unset user info: ", err)
 					}
 				}
-			case "update":
+			case db.Chats[chat_id].Config.UpdateCmd:
 				has_privileges, err := maidIsUserHasPrivileges(100, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -303,7 +372,7 @@ func main() {
 						log.Println("ERROR: failed to warn user: ", err)
 					}
 				}
-			case "warn":
+			case db.Chats[chat_id].Config.WarnCmd:
 				has_privileges, err := maidIsUserHasPrivileges(50, bot, update, &db)
 				if err != nil {
 					log.Println("ERROR: can't check user privileges: ", err)
@@ -317,7 +386,7 @@ func main() {
 						log.Println("ERROR: failed to warn user: ", err)
 					}
 				}
-			case "welcome":
+			case db.Chats[chat_id].Config.WelcomeCmd:
 				if config.BotDebug {
 					msg.Text, err = maidGetWelcome(bot, update, &db)
 					msg.DisableWebPagePreview = db.Chats[chat_id].Config.WelcomeDisableWebPagePreview

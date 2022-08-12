@@ -1,4 +1,4 @@
-module groupmaid
+module groupMaid
 
 go 1.16
 

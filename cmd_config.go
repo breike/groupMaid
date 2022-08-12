@@ -141,6 +141,23 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 	chat_id := strconv.FormatInt(update.Message.Chat.ID, 10)
 
 	switch key {
+	case "ban_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.BanCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+
+		    msg_txt = "command has been changed"
+		}
 	case "ban_command_on":
 		if value != "true" && value != "false" {
 			msg_txt = "ERROR: unknown value"
@@ -162,6 +179,23 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 		}
 
 		msg_txt = "value has been written"
+	case "config_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.ConfigCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+
+		    msg_txt = "command has been changed"
+		}
 	case "delete_last_welcome":
 		if value != "true" && value != "false" {
 			msg_txt = "ERROR: unknown value"
@@ -204,7 +238,24 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 		}
 
 		msg_txt = "value has been written"
-	case "welcome_disable_web_page_preview":
+	case "help_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.HelpCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "help_command_on":
 		if value != "true" && value != "false" {
 			msg_txt = "ERROR: unknown value"
 
@@ -212,9 +263,157 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 		}
 
 		if value == "true" {
-			db.Chats[chat_id].Config.WelcomeDisableWebPagePreview = true
+			db.Chats[chat_id].Config.HelpCommandOn = true
 		} else {
-			db.Chats[chat_id].Config.WelcomeDisableWebPagePreview = false
+			db.Chats[chat_id].Config.HelpCommandOn = false
+		}
+
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		if err != nil {
+			msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			return msg_txt, err
+		}
+
+		msg_txt = "value has been written"
+	case "info_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.InfoCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "info_command_on":
+		if value != "true" && value != "false" {
+			msg_txt = "ERROR: unknown value"
+
+			return msg_txt, err
+		}
+
+		if value == "true" {
+			db.Chats[chat_id].Config.InfoCommandOn = true
+		} else {
+			db.Chats[chat_id].Config.InfoCommandOn = false
+		}
+
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		if err != nil {
+			msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			return msg_txt, err
+		}
+
+		msg_txt = "value has been written"
+	case "kick_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.KickCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "mute_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.MuteCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "mute_command_on":
+		if value != "true" && value != "false" {
+			msg_txt = "ERROR: unknown value"
+
+			return msg_txt, err
+		}
+
+		if value == "true" {
+			db.Chats[chat_id].Config.MuteCommandOn = true
+		} else {
+			db.Chats[chat_id].Config.MuteCommandOn = false
+		}
+
+		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		if err != nil {
+			msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			return msg_txt, err
+		}
+
+		msg_txt = "value has been written"
+	case "remove_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.RemoveCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "rules_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.RulesCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "rules_command_on":
+		if value != "true" && value != "false" {
+			msg_txt = "ERROR: unknown value"
+
+			return msg_txt, err
+		}
+
+		if value == "true" {
+			db.Chats[chat_id].Config.RulesCommandOn = true
+		} else {
+			db.Chats[chat_id].Config.RulesCommandOn = false
 		}
 
 		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
@@ -246,20 +445,136 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 		}
 
 		msg_txt = "value has been written"
-	case "help_command_on":
-		if value != "true" && value != "false" {
-			msg_txt = "ERROR: unknown value"
+	case "set_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.SetCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "setrules_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.SetrulesCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "setwelcome_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.SetwelcomeCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "status_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.StatusCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "unmute_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.UnmuteCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "unset_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.UnsetCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "update_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.UpdateCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "warns_action":
+		warns_action, err := strconv.Atoi(value)
+		if  err != nil {
+			msg_txt = "ERROR: value is not digit"
 
 			return msg_txt, err
 		}
 
-		if value == "true" {
-			db.Chats[chat_id].Config.HelpCommandOn = true
-		} else {
-			db.Chats[chat_id].Config.HelpCommandOn = false
-		}
+		db.Chats[chat_id].Config.WarnsAction = warns_action
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -267,20 +582,34 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 		}
 
 		msg_txt = "value has been written"
-	case "info_command_on":
-		if value != "true" && value != "false" {
-			msg_txt = "ERROR: unknown value"
+	case "warn_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.WarnCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "warns_limit":
+		warns_limit, err := strconv.Atoi(value)
+		if  err != nil {
+			msg_txt = "ERROR: value is not digit"
 
 			return msg_txt, err
 		}
 
-		if value == "true" {
-			db.Chats[chat_id].Config.InfoCommandOn = true
-		} else {
-			db.Chats[chat_id].Config.InfoCommandOn = false
-		}
+		db.Chats[chat_id].Config.WarnsLimit = warns_limit
 
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
@@ -288,7 +617,24 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 		}
 
 		msg_txt = "value has been written"
-	case "mute_command_on":
+	case "welcome_command":
+		if value[0:1] != "/" {
+		    msg_txt = "command must start with '/'"
+
+			return msg_txt, err
+		} else {
+		    db.Chats[chat_id].Config.WelcomeCmd = value
+
+		    err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
+		    if err != nil {
+			    msg_txt = "ERROR: can't write db, check out logs for further info"
+
+			    return msg_txt, err
+		    }
+		}
+
+		msg_txt = "command has been changed"
+	case "welcome_disable_web_page_preview":
 		if value != "true" && value != "false" {
 			msg_txt = "ERROR: unknown value"
 
@@ -296,30 +642,9 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 		}
 
 		if value == "true" {
-			db.Chats[chat_id].Config.MuteCommandOn = true
+			db.Chats[chat_id].Config.WelcomeDisableWebPagePreview = true
 		} else {
-			db.Chats[chat_id].Config.MuteCommandOn = false
-		}
-
-		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
-		if err != nil {
-			msg_txt = "ERROR: can't write db, check out logs for further info"
-
-			return msg_txt, err
-		}
-
-		msg_txt = "value has been written"
-	case "rules_command_on":
-		if value != "true" && value != "false" {
-			msg_txt = "ERROR: unknown value"
-
-			return msg_txt, err
-		}
-
-		if value == "true" {
-			db.Chats[chat_id].Config.RulesCommandOn = true
-		} else {
-			db.Chats[chat_id].Config.RulesCommandOn = false
+			db.Chats[chat_id].Config.WelcomeDisableWebPagePreview = false
 		}
 
 		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
@@ -344,42 +669,6 @@ func maidSetChatConfig(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB,
 		}
 
 		err := dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
-		if err != nil {
-			msg_txt = "ERROR: can't write db, check out logs for further info"
-
-			return msg_txt, err
-		}
-
-		msg_txt = "value has been written"
-	case "warns_limit":
-		warns_limit, err := strconv.Atoi(value)
-		if  err != nil {
-			msg_txt = "ERROR: value is not digit"
-
-			return msg_txt, err
-		}
-
-		db.Chats[chat_id].Config.WarnsLimit = warns_limit
-
-		err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
-		if err != nil {
-			msg_txt = "ERROR: can't write db, check out logs for further info"
-
-			return msg_txt, err
-		}
-
-		msg_txt = "value has been written"
-	case "warns_action":
-		warns_action, err := strconv.Atoi(value)
-		if  err != nil {
-			msg_txt = "ERROR: value is not digit"
-
-			return msg_txt, err
-		}
-
-		db.Chats[chat_id].Config.WarnsAction = warns_action
-
-		err = dbWriteChatConfig(chat_id, db.Chats[chat_id].Config)
 		if err != nil {
 			msg_txt = "ERROR: can't write db, check out logs for further info"
 
