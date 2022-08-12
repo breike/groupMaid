@@ -400,6 +400,8 @@ func main() {
 					}
 
 				}
+
+				continue
 			}
 
 			if err != nil {
