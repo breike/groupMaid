@@ -54,7 +54,7 @@ func maidGetHelp(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (stri
 				"\n\n— `ban_command` — команда бана. На вход идёт строка без слеша." +
 				"\n\n— `config_command` — команда настроек. На вход идёт строка без слеша." +
 				"\n\n— `help_command` — команда помощи. На вход идёт строка без слеша." +
-				"\n\n— `info_command.` — команда информации о пользователе. На вход идёт строка без слеша." +
+				"\n\n— `info_command` — команда информации о пользователе. На вход идёт строка без слеша." +
 				"\n\n— `kick_command` — команда кика. На вход идёт строка без слеша." +
 				"\n\n— `mute_command` — команда мута. На вход идёт строка без слеша." +
 				"\n\n— `remove_command` — команда удаления инфы о пользователе. На вход идёт строка без слеша." +
@@ -94,7 +94,7 @@ func maidGetHelp(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (stri
 			msg_txt = "`/" + db.Chats[chat_id].Config.SetCmd + "`" +
 				  " — при реплае устанавливает какую-то характеристику пользователю." +
 				  "\n\nПример:" +
-				  "\n\n`/set notes омежка" +
+				  "\n\n`/set notes омежка`" +
 			          "\n\nДоступные характеристики:" +
 				  "\n\n— `adminnotes` — заметки, которые могут посмотреть лишь админы." +
 				  "\n\n— `ban` — причина бана." +
