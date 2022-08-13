@@ -10,7 +10,7 @@ import (
 func maidGetHelp(bot *tgbotapi.BotAPI, update tgbotapi.Update, db *maidDB) (string, error) {
 	msg_txt               := ""
 	var err error          = nil
-	var chat_id string     = strconv.Itoa(update.Message.Chat.ID)
+	var chat_id string     = strconv.Itoa(int(update.Message.Chat.ID))
 	var key     string
 
 	args_list := strings.Split(update.Message.Text, " ")
