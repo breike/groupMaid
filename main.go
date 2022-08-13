@@ -225,7 +225,11 @@ func main() {
 				}
 
 			case db.Chats[chat_id].Config.HelpCmd:
-				msg.Text, err = "type /hey", nil
+				msg.Text, err = maidGetHelp(bot, update, &db)
+
+				if err != nil {
+					log.Println("ERROR: some problems with maidGetHelp: ", err)
+				}
 			case db.Chats[chat_id].Config.InfoCmd:
 				msg.Text, err = maidGetUserInfo(bot, update, &db)
 				if err != nil {
